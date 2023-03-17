@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  adonis_app:
+    container_name: adonis_app
+    restart: always
+    build:
+      context: api/
+      target: dependencies
+    ports:
+      - "3333:3333"
+      - "9229:9229"
+    env_file:
+      - api/.env
+    volumes:
+      - ./api/:/home/node/app
+      # Uncomment the below line if you developing on MacOS
+      #- /home/node/app/node_modules
+    command: dumb-init node ace serve --watch --node-args="--inspect=0.0.0.0"
+    networks:
+      - http_network
+
+  external_api:
+    container_name: external_api
+    restart: always
+    build:
+      context: external/
+      target: dependencies
+    env_file:
+      - external/.env
+    volumes:
+      - ./external/:/home/node/app
+      # Uncomment the below line if you developing on MacOS
+      #- /home/node/app/node_modules
+    command: dumb-init node ace serve --watch --node-args="--inspect=0.0.0.0"
+    networks:
+      - http_network
+
+networks:
+  http_network:
+    driver: bridge
