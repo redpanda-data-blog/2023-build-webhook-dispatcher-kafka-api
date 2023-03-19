@@ -5,7 +5,7 @@ export default class RedpandaService {
     this.producer.connect()
   }
 
-  public async getOrCreateTopic(eventType: string) {
+  private async getOrCreateTopic(eventType: string) {
     const existingTopics = await this.admin.listTopics()
     if (existingTopics.includes(eventType)) {
       return existingTopics[existingTopics.indexOf(eventType)]
@@ -24,7 +24,8 @@ export default class RedpandaService {
     return eventType
   }
 
-  public async createEvent(topicName: string, webhookUrl: string, payload: object) {
+  public async createEvent(eventType: string, webhookUrl: string, payload: object) {
+    const topicName = await this.getOrCreateTopic(eventType)
     const eventData = {
       webhookUrl,
       payload,

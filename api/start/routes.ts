@@ -24,8 +24,7 @@ import RedpandaService from '@ioc:RedpandaService'
 Route.post('/webhook', async ({ request }) => {
   const { eventType, webhookUrl, payload } = request.body()
 
-  const topicName = await RedpandaService.getOrCreateTopic(eventType)
-  await RedpandaService.createEvent(topicName, webhookUrl, payload)
+  await RedpandaService.createEvent(eventType, webhookUrl, payload)
 
   return { success: true }
 })
