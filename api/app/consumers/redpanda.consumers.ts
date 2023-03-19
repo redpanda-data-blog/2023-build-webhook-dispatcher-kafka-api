@@ -1,4 +1,5 @@
 import { Consumer, Kafka } from 'kafkajs'
+import axios from 'axios'
 
 export default class RedpandaConsumers {
   private readonly aliveConsumers: Consumer[]
@@ -31,7 +32,10 @@ export default class RedpandaConsumers {
     await consumer.run({
       eachMessage: async ({ message }) => {
         const event = JSON.parse((message.value as Buffer).toString())
-        console.log(event)
+
+        const { webhookUrl, payload } = event
+
+        await axios.post(webhookUrl, { ...payload })
       },
     })
     return consumer
