@@ -22,11 +22,10 @@ import Route from '@ioc:Adonis/Core/Route'
 import RedpandaService from '@ioc:RedpandaService'
 
 Route.post('/webhook', async ({ request }) => {
-  const { eventType } = request.body()
+  const { eventType, webhookUrl, payload } = request.body()
 
-  await RedpandaService.getOrCreateTopic(eventType)
-
-  // TODO: Write body to topic
+  const topicName = await RedpandaService.getOrCreateTopic(eventType)
+  await RedpandaService.createEvent(topicName, webhookUrl, payload)
 
   return { success: true }
 })

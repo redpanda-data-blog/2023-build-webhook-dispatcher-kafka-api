@@ -12,7 +12,7 @@ export default class AppProvider {
     })
     this.app.container.singleton(
       'RedpandaService',
-      () => new RedpandaService(redpanda.admin())
+      () => new RedpandaService(redpanda.admin(), redpanda.producer())
     )
   }
 

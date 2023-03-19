@@ -1,7 +1,9 @@
-import { Admin } from 'kafkajs'
+import { Admin, Producer } from 'kafkajs'
 
 export default class RedpandaService {
-  constructor(private readonly admin: Admin) {}
+  constructor(private readonly admin: Admin, private readonly producer: Producer) {
+    this.producer.connect()
+  }
 
   public async getOrCreateTopic(eventType: string) {
     const existingTopics = await this.admin.listTopics()
@@ -20,5 +22,16 @@ export default class RedpandaService {
     })
 
     return eventType
+  }
+
+  public async createEvent(topicName: string, webhookUrl: string, payload: object) {
+    const eventData = {
+      webhookUrl,
+      payload,
+    }
+    await this.producer.send({
+      topic: topicName,
+      messages: [{ value: JSON.stringify(eventData) }],
+    })
   }
 }
