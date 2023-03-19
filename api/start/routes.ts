@@ -19,7 +19,14 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
+import RedpandaService from '@ioc:RedpandaService'
 
-Route.get('/', async () => {
-  return { hello: 'world' }
+Route.post('/webhook', async ({ request }) => {
+  const { eventType } = request.body()
+
+  await RedpandaService.getOrCreateTopic(eventType)
+
+  // TODO: Write body to topic
+
+  return { success: true }
 })
