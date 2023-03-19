@@ -1,7 +1,12 @@
 import { Admin, Producer } from 'kafkajs'
+import RedpandaConsumers from 'App/consumers/redpanda.consumers'
 
 export default class RedpandaService {
-  constructor(private readonly admin: Admin, private readonly producer: Producer) {
+  constructor(
+    private readonly admin: Admin,
+    private readonly producer: Producer,
+    private readonly redpandaConsumers: RedpandaConsumers
+  ) {
     this.producer.connect()
   }
 
@@ -20,6 +25,7 @@ export default class RedpandaService {
         },
       ],
     })
+    await this.redpandaConsumers.connectNewConsumer(eventType)
 
     return eventType
   }
